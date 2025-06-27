@@ -115,9 +115,9 @@ class SteeringMobis : public Product {
 };
 
 
-class TypeFactory {
+class TypeFactory : public ProductFactory {
 public:
-    static Product* create(int item) {
+    Product* create(int item) override {
         if (item == SEDAN) return new TypeSedan();
         if (item == SUV) return new TypeSUV();
         return new TypeTruck();
@@ -125,9 +125,9 @@ public:
     }
 };
 
-class EngineFactory {
+class EngineFactory : public ProductFactory {
 public:
-    static Product* create(int item) {
+    Product* create(int item) override {
         if (item == GM) return new EngineGM();
         if (item == TOYOTA) return new EngineToyota();
         if (item == WIA) return new EngineWIA();
@@ -135,20 +135,30 @@ public:
     }
 };
 
-class BreakFactory {
+class BreakFactory : public ProductFactory {
 public:
-    static Product* create(int item) {
+    Product* create(int item) override {
         if (item == MANDO) return new BreakMando();
         if (item == CONTINENTAL) return new BreakContinental();
         return new BreakBosch();
     }
 };
 
-class SteeringFactory {
+class SteeringFactory : public ProductFactory {
 public:
-    static Product* create(int item) {
+    Product* create(int item) override {
         if (item == BOSCH_S) return new SteeringBosch();
         return new SteeringMobis();
+    }
+};
+
+class ChoiceFactory {
+public:
+    ProductFactory* getFactory(int step) {
+        if (step == CarType_Q) return new TypeFactory();
+        if (step == Engine_Q) return new EngineFactory();
+        if (step == brakeSystem_Q) return new BreakFactory();
+        return new SteeringFactory();
     }
 };
 

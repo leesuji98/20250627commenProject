@@ -19,10 +19,7 @@ int main()
 
 Car car;
 
-void selectCarType(int answer);
-void selectEngine(int answer);
-void selectbrakeSystem(int answer);
-void selectSteeringSystem(int answer);
+int runStep(int step, int answer);
 void runProducedCar();
 void testProducedCar();
 void delay(int ms);
@@ -43,14 +40,6 @@ enum InputValue
     NotNumber_I = -2,
 };
 
-enum QuestionType
-{
-    CarType_Q,
-    Engine_Q,
-    brakeSystem_Q,
-    SteeringSystem_Q,
-    Run_Test,
-};
 
 void delay(int ms)
 {
@@ -98,47 +87,26 @@ int checkAnswerWrongRange(int step, int answer)
     return ret;
 }
 
-int runStep(int step, int answer)
+void setCar(int step, int answer, Product* p)
 {
-    if (step == CarType_Q)
-    {
-        selectCarType(answer);
-        delay(800);
-        step = Engine_Q;
+    if (step == CarType_Q) {
+        car.carType = p;
+        return;
     }
-    else if (step == Engine_Q)
-    {
-        selectEngine(answer);
-        delay(800);
-        step = brakeSystem_Q;
+    if (step == Engine_Q) {
+        car.engine = p;
+        return;
     }
-    else if (step == brakeSystem_Q)
-    {
-        selectbrakeSystem(answer);
-        delay(800);
-        step = SteeringSystem_Q;
+    if (step == brakeSystem_Q) {
+        car.breakSystem = p;
+        return;
     }
-    else if (step == SteeringSystem_Q)
-    {
-        selectSteeringSystem(answer);
-        delay(800);
-        step = Run_Test;
+    if (step == SteeringSystem_Q) {
+        car.steering = p;
+        return;
     }
-    else if (step == Run_Test && answer == 1)
-    {
-        runProducedCar();
-        delay(200);
-    }
-    else if (step == Run_Test && answer == 2)
-    {
-        printf("Test...\n");
-        delay(1500);
-        testProducedCar();
-        delay(2000);
-    }
-
-    return step;
 }
+
 
 int main()
 {
@@ -210,14 +178,12 @@ int main()
             printf("바이바이\n");
             break;
         }
-
         if (answer == NotNumber_I)
         {
             printf("ERROR :: 숫자만 입력 가능\n");
             delay(2000);
             continue;
         }
-
         if (answer == Reset_I)
         {
             if ((step == CarType_Q)) {
@@ -247,36 +213,43 @@ int main()
     }
 }
 
-void selectCarType(int answer)
+int runStep(int step, int answer)
 {
-    TypeFactory typefac;
-    car.carType = typefac.create(answer);
+    ChoiceFactory choicefac;
+    ProductFactory* fac = choicefac.getFactory(step);
 
-    printf("차량 타입으로 %s을 선택하셨습니다.\n", car.carType->getName().c_str());
-}
+    const string preStr = "차량 타입으로 ";
+    const string endStr = "을 선택하셨습니다.\n";
 
-void selectEngine(int answer)
-{
-    EngineFactory enginefac;
-    car.engine = enginefac.create(answer);
+    if (step == Run_Test && answer == 1)
+    {
+        runProducedCar();
+        delay(200);
+        return step;
+    }
+    else if (step == Run_Test && answer == 2)
+    {
+        printf("Test...\n");
+        delay(1500);
+        testProducedCar();
+        delay(2000);
+        return step;
+    }
+    Product* prod = fac->create(answer);
+    setCar(step, answer, prod);
 
-    printf("%s 을 선택하셨습니다.\n", car.engine->getName().c_str());
-}
+    string printStr = prod->getName();
 
-void selectbrakeSystem(int answer)
-{
-    BreakFactory breakfac;
-    car.breakSystem = breakfac.create(answer);
+    if (step == CarType_Q)
+        printStr = preStr + printStr + endStr;
+    else
+        printStr = printStr + endStr;
 
-    printf("%s 를 선택하셨습니다.\n", car.breakSystem->getName().c_str());
-}
+    printf("%s", printStr.c_str());
 
-void selectSteeringSystem(int answer)
-{
-    SteeringFactory steeringfac;
-    car.steering = steeringfac.create(answer);
-
-    printf("%s 를 선택하셨습니다.\n", car.steering->getName().c_str());
+    delay(1500);
+    step += 1;
+    return step;
 }
 
 void runProducedCar()

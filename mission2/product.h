@@ -1,6 +1,15 @@
 #include <iostream>
 using std::string;
 #pragma once
+enum QuestionType
+{
+    CarType_Q,
+    Engine_Q,
+    brakeSystem_Q,
+    SteeringSystem_Q,
+    Run_Test,
+};
+
 enum CarType
 {
     SEDAN = 1,
@@ -36,3 +45,8 @@ public:
     virtual ~Product() {};
 };
 
+class ProductFactory {
+public:
+    virtual Product* create(int item) = 0;
+    virtual ~ProductFactory() {}
+};
