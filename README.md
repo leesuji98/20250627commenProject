@@ -7,8 +7,8 @@
 
 `README.md` 
 1. D1 ~ D5 까지 적용 여부 체크리스트  
-D1 O
-D2 O
-D3 O
-D4 O
-D5 O
+- D1 O
+- D2 O
+- D3 O
+- D4 O
+- D5 O
