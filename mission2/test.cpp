@@ -60,3 +60,21 @@ TEST(ProductTest, steering) {
 	EXPECT_EQ(BOSCH_S, p1->getID());
 	EXPECT_EQ(MOBIS, p2->getID());
 }
+
+TEST(ProductTest, factory) {
+	ChoiceFactory choicefac;
+	ProductFactory* fac1 = choicefac.getFactory(CarType_Q);
+	ProductFactory* fac2 = choicefac.getFactory(Engine_Q);
+	ProductFactory* fac3 = choicefac.getFactory(brakeSystem_Q);
+	ProductFactory* fac4 = choicefac.getFactory(SteeringSystem_Q);
+
+	Product* p1 = fac1->create(SUV);
+	Product* p2 = fac2->create(BROKEN);
+	Product* p3 = fac3->create(CONTINENTAL);
+	Product* p4 = fac4->create(BOSCH_S);
+
+	EXPECT_EQ(SUV, p1->getID());
+	EXPECT_EQ(BROKEN, p2->getID());
+	EXPECT_EQ(CONTINENTAL, p3->getID());
+	EXPECT_EQ(BOSCH_S, p4->getID());
+}
